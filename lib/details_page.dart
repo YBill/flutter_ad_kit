@@ -8,6 +8,7 @@ import 'package:flutter_ad_kit/src/delegate/base_ad_delegate.dart';
 import 'package:flutter_ad_kit/src/enums/ad_source.dart';
 import 'package:flutter_ad_kit/src/enums/ad_status.dart';
 import 'package:flutter_ad_kit/src/enums/ad_type.dart';
+import 'package:flutter_ad_kit/src/listener/ad_event_callbacks.dart';
 import 'package:flutter_ad_kit/src/utils/app_lifecycle_reactor.dart';
 import 'package:flutter_ad_kit/src/view/banner_ad_widget.dart';
 import 'package:flutter_ad_kit/src/view/native_ad_widget.dart';
@@ -126,7 +127,18 @@ class _DetailsPageState extends State<DetailsPage> {
 
   void _showInterstitialAd() {
     final adUnitId = Platform.isAndroid ? 'ca-app-pub-3940256099942544/1033173712' : 'ca-app-pub-3940256099942544/4411468910';
-    Ads.instance.showAd(adSource: AdSource.admob, adType: AdType.interstitial, adUnitId: adUnitId);
+    Ads.instance.showAd(
+        adSource: AdSource.admob,
+        adType: AdType.interstitial,
+        adUnitId: adUnitId,
+        eventCallback: AdEventCallbacks(
+          onAdShowed: ([data]) {
+            print('--------------------------- onAdShowed');
+          },
+          onAdLoaded: ([data]) {
+            print('--------------------------- onAdLoaded');
+          },
+        ));
   }
 
   void _showRewardedAd() {

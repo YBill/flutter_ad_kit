@@ -48,9 +48,9 @@ class Ads {
   /// [admobConfiguration] 添加Admob测试ID
   /// [enableLogger] 是否开启日志
   Future<void> initialize(
-      BaseAdConfig adConfig, {
-        RequestConfiguration? admobConfiguration,
-      }) async {
+    BaseAdConfig adConfig, {
+    RequestConfiguration? admobConfiguration,
+  }) async {
     if (adConfig.enableLogger) {
       AdLog.enableLogger();
       AdLoadMonitor().listen();
@@ -237,10 +237,10 @@ class Ads {
   /// [autoRefillAd] 消费广告后是否自动补一条（默认在onAdDismissed或onAdFailedToShow中补充，且不强制填充）
   Future<BaseAdDelegate?> fetchAd(
       {required AdSource adSource,
-        required AdType adType,
-        required String adUnitId,
-        String? nativeAdFactoryId,
-        AutoRefillAdPolicy? autoRefillAdPolicy}) async {
+      required AdType adType,
+      required String adUnitId,
+      String? nativeAdFactoryId,
+      AutoRefillAdPolicy? autoRefillAdPolicy}) async {
     if (adType == AdType.banner) {
       throw ArgumentError('Banner ad is not supported in this method');
     }
@@ -251,7 +251,7 @@ class Ads {
     AutoRefillAdPolicy refillPolicy = autoRefillAdPolicy ?? AutoRefillAdPolicy.defaultPolicy;
 
     BaseAdDelegate? ad =
-    popAd(adSource: adSource, adType: adType, adUnitId: adUnitId, nativeAdFactoryId: nativeAdFactoryId, autoRefillAdPolicy: refillPolicy);
+        popAd(adSource: adSource, adType: adType, adUnitId: adUnitId, nativeAdFactoryId: nativeAdFactoryId, autoRefillAdPolicy: refillPolicy);
 
     if (ad == null) {
       ad = createAd(adSource, adType, adUnitId, nativeAdFactoryId: nativeAdFactoryId, pushToQueue: false);
@@ -266,11 +266,11 @@ class Ads {
   /// [autoRefillAd] 消费广告后是否自动补一条（默认在onAdDismissed或onAdFailedToShow中补充，且不强制填充）
   Future<bool> showAd(
       {required AdSource adSource,
-        required AdType adType,
-        required String adUnitId,
-        String? nativeAdFactoryId,
-        AutoRefillAdPolicy? autoRefillAdPolicy,
-        AdEventCallbacks? eventCallback}) async {
+      required AdType adType,
+      required String adUnitId,
+      String? nativeAdFactoryId,
+      AutoRefillAdPolicy? autoRefillAdPolicy,
+      AdEventCallbacks? eventCallback}) async {
     if (adType == AdType.banner || adType == AdType.native) {
       throw ArgumentError('Native or Banner ad is not supported in this method');
     }
@@ -282,6 +282,7 @@ class Ads {
 
     ad.onAdLoaded = ([data]) {
       eventCallback?.onAdLoaded?.call(data);
+      ad.showAd();
     };
     ad.onAdShowed = ([data]) {
       eventCallback?.onAdShowed?.call(data);
@@ -304,12 +305,8 @@ class Ads {
 
     if (ad.adStatus == AdStatus.loaded) {
       ad.showAd();
-      return true;
     }
 
-    ad.onAdLoaded = ([data]) {
-      ad.showAd();
-    };
     return true;
   }
 
